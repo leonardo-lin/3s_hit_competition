@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Excel Data</title>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* 控制表格之間的間距 */
+            justify-content: flex-start; /* 使所有表格向左對齊 */
+        }
+        .table-container {
+            flex: 1 1 300px; /* 設定表格的最小寬度，並允許表格擴展 */
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left; /* 使表格內容向左對齊 */
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .table th {
+            background-color: #f4f4f4;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Excel Data</h1>
+    <div class="container">
+        {% for table_info in tables %}
+            <div class="table-container">
+                <h2>{{ table_info.name }}</h2>
+                {{ table_info.table | safe }}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
