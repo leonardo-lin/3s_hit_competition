@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Excel File: {{ filename }}</title>
+    <style>
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid black; padding: 8px; text-align: left; }
+    </style>
+  </head>
+  <body>
+    <h1>Edit Excel File: {{ filename }}</h1>
+    {% if message %}
+      <p>{{ message }}</p>
+    {% endif %}
+    <form method="POST">
+      <table>
+        <thead>
+          <tr>
+            {% for col in df.columns %}
+              <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(df.shape[0]) %}
+          <tr>
+            {% for j in range(df.shape[1]) %}
+            <td>
+              <input type="text" name="{{ i }}_{{ j }}" value="{{ df.iloc[i, j] }}">
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input type="submit" name="save" value="Save">
+    </form>
+  </body>
+</html>
