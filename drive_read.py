@@ -1,76 +1,62 @@
+import io
+
+import google.auth
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseDownload
 import os.path
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaIoBaseDownload
-import io
+# import os.path
 
-# If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
+# from google.auth.transport.requests import Request
+# from google.oauth2.credentials import Credentials
+# from google_auth_oauthlib.flow import InstalledAppFlow
+# from googleapiclient.discovery import build
+# from googleapiclient.errors import HttpError
+SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]
+def download_file(real_file_id):
+  """Downloads a file
+  Args:
+      real_file_id: ID of the file to download
+  Returns : IO object with location.
 
-def read_file_content(service, file_id):
-    """Read a file's content by file_id without downloading it."""
+  Load pre-authorized user credentials from the environment.
+  TODO(developer) - See https://developers.google.com/identity
+  for guides on implementing OAuth2 for the application.
+  """
+#   creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+  # The file token.json stores the user's access and refresh tokens, and is
+  # created automatically when the authorization flow completes for the first
+  # time.
+  
+  creds, _ = google.auth.default()
+
+  try:
+    # create drive api client
+    service = build("drive", "v3", credentials=creds)
+
+    file_id = real_file_id
+
+    # pylint: disable=maybe-no-member
     request = service.files().get_media(fileId=file_id)
-    fh = io.BytesIO()
-    downloader = MediaIoBaseDownload(fh, request)
+    file = io.BytesIO()
+    downloader = MediaIoBaseDownload(file, request)
     done = False
-    while not done:
-        status, done = downloader.next_chunk()
-    fh.seek(0)
-    return fh.read().decode('utf-8')
+    while done is False:
+      status, done = downloader.next_chunk()
+      print(f"Download {int(status.progress() * 100)}.")
 
-def main():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to and
-    the content of .txt files.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
+  except HttpError as error:
+    print(f"An error occurred: {error}")
+    file = None
 
-    try:
-        service = build("drive", "v3", credentials=creds)
+  return file.getvalue()
 
-        # Call the Drive v3 API
-        results = (
-            service.files()
-            .list(pageSize=10, fields="nextPageToken, files(id, name, mimeType)")
-            .execute()
-        )
-        items = results.get("files", [])
-
-        if not items:
-            print("No files found.")
-            return
-        print("Files:")
-        for item in items:
-            print(f"{item['name']} ({item['id']})")
-            # Check if the file is a .txt file
-            if item['mimeType'] == 'text/plain':
-                print(f"Content of {item['name']}:")
-                content = read_file_content(service, item['id'])
-                print(content)
-                print("------------")
-    except HttpError as error:
-        # TODO(developer) - Handle errors from drive API.
-        print(f"An error occurred: {error}")
 
 if __name__ == "__main__":
-    main()
+  download_file(real_file_id="test.txt")
