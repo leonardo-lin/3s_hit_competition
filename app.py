@@ -11,12 +11,14 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def get_xlsx_files():
+    return [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if f.endswith('.xlsx')]
+
 
 # 第 1 個網頁：上傳 .xlsx 檔案
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        # 檢查是否有文件上傳
         if 'file' in request.files:
             file = request.files['file']
             if file.filename == '':
@@ -26,15 +28,29 @@ def upload():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filepath)
 
-            return 'File uploaded successfully'
+            return redirect(url_for('edit'))
 
     return render_template('upload.html')
 
 
 # 第 2 個網頁：編輯 .xlsx 檔案
-@app.route('/edit/<filename>', methods=['GET', 'POST'])
-def edit(filename):
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    files = get_xlsx_files()
+    
+    if request.method == 'POST':
+        selected_file = request.form.get('file_select')
+        if selected_file:
+            return redirect(url_for('edit_file', filename=selected_file))
+    
+    return render_template('edit.html', files=files)
+
+
+# 第 2.1 個網頁：編輯特定 .xlsx 檔案
+@app.route('/edit_file/<filename>', methods=['GET', 'POST'])
+def edit_file(filename):
+    filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
     if not os.path.exists(filepath):
         return 'File not found'
     
@@ -55,21 +71,22 @@ def edit(filename):
                 df.iat[row_idx, col_idx] = value
         
         df.to_excel(filepath, index=False)
-        return render_template('edit.html', df=df, filename=filename, message="File saved successfully")
+        return render_template('edit_file.html', df=df, filename=filename, message="File saved successfully")
 
-    return render_template('edit.html', df=df, filename=filename)
+    return render_template('edit_file.html', df=df, filename=filename)
 
 
 # 第 3 個網頁：顯示 .xlsx 檔案內容（僅讀取）
 @app.route('/view/<filename>')
 def view(filename):
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
     if not os.path.exists(filepath):
         return 'File not found'
     
     # 讀取 Excel 檔案
     df = pd.read_excel(filepath)
-
+    # print(df)
     # 顯示檔案內容
     return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
 
