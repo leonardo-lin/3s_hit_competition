@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # 設定檔案上傳的目錄
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'competitions'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -57,6 +57,9 @@ def edit_file(filename):
     # 讀取 Excel 檔案
     df = pd.read_excel(filepath)
 
+    # 將 NaN 值替換為空字符串
+    df.fillna("", inplace=True)
+
     if request.method == 'POST':
         # 保存修改的數據
         updated_data = {}
@@ -90,6 +93,35 @@ def view(filename):
     # 顯示檔案內容
     return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
 
+# 第 3 個網頁：顯示所有.xlsx檔案表格
+@app.route('/view')
+def overview():
+    folder_path = UPLOAD_FOLDER
+    tables = []
+
+    # 遍歷資料夾中的所有 .xlsx 文件
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith('.xlsx'):
+            file_path = os.path.join(folder_path, file_name)
+            # 讀取 Excel 文件的所有列
+            df = pd.read_excel(file_path)
+            # 刪除第 5 和第 6 列都非空的行
+            df_filtered = df[~(df.iloc[:, 4].notna() & df.iloc[:, 5].notna())]
+            # 只保留前 4 列
+            df_filtered = df_filtered.iloc[:, :4]
+            # 將 DataFrame 轉換為 HTML 表格
+            table_html = df_filtered.to_html(classes='table table-striped', index=False)
+            tables.append({
+                'name': file_name,
+                'table': table_html
+            })
+
+    # 將表格和文件名傳遞給模板
+    return render_template('display.html', tables=tables)
+
+@app.route('/score')
+def index():
+    return render_template('score.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

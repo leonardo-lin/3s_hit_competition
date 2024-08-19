@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Scoring System</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+        .player {
+            flex: 1;
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .player-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+            width: 80%;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            background-color: black;
+            color: white;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px auto;
+            width: 300px;
+        }
+        .score {
+            font-size: 48px;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        .label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: black;
+            color: white;
+            font-size: 24px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .osaekomi {
+            font-size: 48px;
+            margin-bottom: 10px;
+            background-color: white;
+            color: black;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            border-radius: 5px;
+        }
+        .osaekomi-button {
+            background-color: yellow;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 24px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .osaekomi-button:hover {
+            background-color: orange;
+        }
+        .disabled {
+            background-color: black !important;
+            color: black !important;
+            pointer-events: none;
+        }
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+        }
+        .timer {
+            font-size: 96px;
+            color: red;
+            margin-bottom: 20px;
+        }
+        .coach-area {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .coach-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+        }
+
+        .coach-stages {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .coach-stage {
+            font-size: 24px;
+            margin: 5px 0;
+            padding: 5px;
+            width: 40px;
+            text-align: center;
+            border-radius: 5px;
+            color: white;
+            background-color: black;
+        }
+
+        .coach-stage.s1 {
+            background-color: yellow;
+            color: black;
+        }
+
+        .coach-stage.s2 {
+            background-color: yellow;
+            color: black;
+        }
+
+        .coach-stage.H {
+            background-color: red;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scoreboard">
+        <div class="player">
+            <div class="osaekomi" id="osaekomi_lucas">0</div>
+            <button class="osaekomi-button" id="osaekomi_button_lucas" onclick="toggleOsaekomi('lucas')">Osaekomi</button>
+            <input type="text" class="player-name" id="name_lucas" value="Lucas">
+            <div class="score-container">
+                <div class="score" id="half_score_lucas" onclick="incrementHalfScore('lucas')">
+                    <div class="label">I</div>
+                    <span>0</span>
+                </div>
+                <div class="score" id="full_score_lucas" onclick="incrementFullScore('lucas')">
+                    <div class="label">W</div>
+                    <span>0</span>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="center-container">
+            <div class="timer" id="timer">2:30</div>
+            
+            <div class="coach-area">
+                <div class="coach-container">
+                    <div id="coach_stages_lucas" class="coach-stages">
+                        <span id="coach_stage_H_lucas" class="coach-stage">-</span>
+                        <span id="coach_stage_s2_lucas" class="coach-stage">-</span>
+                        <span id="coach_stage_s1_lucas" class="coach-stage">-</span>
+                        <button class="osaekomi-button" id="coach_button_lucas" onclick="cycleCoachStage('lucas')">S</button>
+                    </div>
+                </div>
+
+                <div class="coach-container">
+                    <div id="coach_stages_alexander" class="coach-stages">
+                        <span id="coach_stage_H_alexander" class="coach-stage">-</span>
+                        <span id="coach_stage_s2_alexander" class="coach-stage">-</span>
+                        <span id="coach_stage_s1_alexander" class="coach-stage">-</span>
+                        <button class="osaekomi-button" id="coach_button_alexander" onclick="cycleCoachStage('alexander')">S</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="player">
+            <div class="osaekomi" id="osaekomi_alexander">0</div>
+            <button class="osaekomi-button" id="osaekomi_button_alexander" onclick="toggleOsaekomi('alexander')">Osaekomi</button>
+            <input type="text" class="player-name" id="name_alexander" value="Alexander">
+            <div class="score-container">
+                <div class="score" id="half_score_alexander" onclick="incrementHalfScore('alexander')">
+                    <div class="label">I</div>
+                    <span>0</span>
+                </div>
+                <div class="score" id="full_score_alexander" onclick="incrementFullScore('alexander')">
+                    <div class="label">W</div>
+                    <span>0</span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timerElement = document.getElementById('timer');
+        let timeRemaining = 150; // 2 minutes 30 seconds
+        let osaekomiTimers = { lucas: null, alexander: null };
+        let osaekomiCounters = { lucas: 0, alexander: 0 };
+        let coachStages = { lucas: 0, alexander: 0 };
+
+        function updateTimer() {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            if (seconds < 10) seconds = '0' + seconds;
+            timerElement.innerHTML = minutes + ":" + seconds;
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                setTimeout(updateTimer, 1000);
+            }
+        }
+
+        updateTimer();
+        function incrementHalfScore(player) {
+            let scoreElement = document.getElementById(`half_score_${player}`);
+            let label = scoreElement.querySelector('.label');
+            let currentScore = parseInt(scoreElement.querySelector('span').textContent);
+
+            // 如果当前值不是有效的数字（如 NaN），则从 0 开始
+            if (isNaN(currentScore)) {
+                currentScore = 0;
+            }
+
+            // 更新分数
+            scoreElement.querySelector('span').textContent = currentScore + 1;
+        }
+
+        function incrementFullScore(player) {
+            let scoreElement = document.getElementById(`full_score_${player}`);
+            let label = scoreElement.querySelector('.label');
+            let currentScore = parseInt(scoreElement.querySelector('span').textContent);
+
+            // 如果当前值不是有效的数字（如 NaN），则从 0 开始
+            if (isNaN(currentScore)) {
+                currentScore = 0;
+            }
+
+            // 更新分数
+            scoreElement.querySelector('span').textContent = currentScore + 1;
+        }
+
+
+
+
+        function toggleOsaekomi(player) {
+            let otherPlayer = (player === 'lucas') ? 'alexander' : 'lucas';
+            let currentButton = document.getElementById(`osaekomi_button_${player}`);
+            let otherButton = document.getElementById(`osaekomi_button_${otherPlayer}`);
+
+            if (osaekomiTimers[player] !== null) {
+                // Stop the timer and reset to zero
+                clearInterval(osaekomiTimers[player]);
+                osaekomiTimers[player] = null;
+                osaekomiCounters[player] = 0;
+                document.getElementById(`osaekomi_${player}`).innerHTML = '0';
+                otherButton.classList.remove('disabled');
+            } else {
+                // Start the timer
+                osaekomiTimers[player] = setInterval(function() {
+                    osaekomiCounters[player]++;
+                    document.getElementById(`osaekomi_${player}`).innerHTML = osaekomiCounters[player];
+                }, 1000);
+                otherButton.classList.add('disabled');
+            }
+        }
+        
+        function cycleCoachStage(player) {
+            let s1Stage = document.getElementById(`coach_stage_s1_${player}`);
+            let s2Stage = document.getElementById(`coach_stage_s2_${player}`);
+            let hStage = document.getElementById(`coach_stage_H_${player}`);
+
+            if (s1Stage.innerHTML === '-') {
+                s1Stage.innerHTML = "s1";
+                s1Stage.classList.add("s1");
+            } else if (s2Stage.innerHTML === '-') {
+                s2Stage.innerHTML = "s2";
+                s2Stage.classList.add("s2");
+            } else if (hStage.innerHTML === '-') {
+                hStage.innerHTML = "H";
+                hStage.classList.add("H");
+            } else {
+                s1Stage.innerHTML = "-";
+                s1Stage.classList.remove("s1");
+                s2Stage.innerHTML = "-";
+                s2Stage.classList.remove("s2");
+                hStage.innerHTML = "-";
+                hStage.classList.remove("H");
+            }
+        }
+    </script>
+
+</body>
+</html>
