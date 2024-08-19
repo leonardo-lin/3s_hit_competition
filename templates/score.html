@@ -17,6 +17,41 @@
             height: 100vh;
             margin: 0;
         }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header input {
+            font-size: 24px;
+            padding: 10px;
+            margin: 0 10px;
+            width: 200px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            background-color: white;
+            color: black;
+        }
+
+        .header button {
+            font-size: 24px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: orange;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .header button:hover {
+            background-color: darkorange;
+        }
+
         .scoreboard {
             display: flex;
             justify-content: space-between;
@@ -25,6 +60,7 @@
             max-width: 800px;
             padding: 20px;
         }
+
         .player {
             flex: 1;
             margin: 0 10px;
@@ -32,6 +68,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         .player-name {
             font-size: 24px;
             margin-bottom: 10px;
@@ -43,12 +80,14 @@
             background-color: black;
             color: white;
         }
+
         .score-container {
             display: flex;
             justify-content: space-between;
             margin: 10px auto;
             width: 300px;
         }
+
         .score {
             font-size: 48px;
             width: 120px;
@@ -62,6 +101,7 @@
             cursor: pointer;
             position: relative;
         }
+
         .label {
             position: absolute;
             top: -25px;
@@ -77,6 +117,7 @@
             justify-content: center;
             border-radius: 50%;
         }
+
         .osaekomi {
             font-size: 48px;
             margin-bottom: 10px;
@@ -90,6 +131,7 @@
             margin: 0 auto 10px auto;
             border-radius: 5px;
         }
+
         .osaekomi-button {
             background-color: yellow;
             color: black;
@@ -100,25 +142,31 @@
             border-radius: 5px;
             margin-top: 10px;
         }
+
         .osaekomi-button:hover {
             background-color: orange;
         }
+
         .disabled {
             background-color: black !important;
             color: black !important;
             pointer-events: none;
         }
+
         .center-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0 20px;
         }
+
         .timer {
             font-size: 96px;
             color: red;
             margin-bottom: 20px;
+            cursor: pointer;
         }
+
         .coach-area {
             display: flex;
             justify-content: space-around;
@@ -167,6 +215,12 @@
 </head>
 <body>
 
+    <div class="header">
+        <input type="text" id="match_order" placeholder="場序" value="1">
+        <input type="text" id="match_category" placeholder="比賽項目組別" value="男子組">
+        <button onclick="openSettings()">設定</button>
+    </div>
+
     <div class="scoreboard">
         <div class="player">
             <div class="osaekomi" id="osaekomi_lucas">0</div>
@@ -181,12 +235,11 @@
                     <div class="label">W</div>
                     <span>0</span>
                 </div>
-                
             </div>
         </div>
         
         <div class="center-container">
-            <div class="timer" id="timer">2:30</div>
+            <div class="timer" id="timer" onclick="toggleTimer()">2:30</div>
             
             <div class="coach-area">
                 <div class="coach-container">
@@ -222,7 +275,6 @@
                     <div class="label">W</div>
                     <span>0</span>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -230,99 +282,89 @@
     <script>
         let timerElement = document.getElementById('timer');
         let timeRemaining = 150; // 2 minutes 30 seconds
-        let osaekomiTimers = { lucas: null, alexander: null };
-        let osaekomiCounters = { lucas: 0, alexander: 0 };
-        let coachStages = { lucas: 0, alexander: 0 };
+        let isTimerRunning = false;
+        let timerInterval;
 
-        function updateTimer() {
-            let minutes = Math.floor(timeRemaining / 60);
-            let seconds = timeRemaining % 60;
-            if (seconds < 10) seconds = '0' + seconds;
-            timerElement.innerHTML = minutes + ":" + seconds;
-            if (timeRemaining > 0) {
-                timeRemaining--;
-                setTimeout(updateTimer, 1000);
+        function openSettings() {
+            let newTime = prompt("請輸入新的計時時間（以秒為單位）", timeRemaining);
+            if (newTime !== null && !isNaN(newTime) && newTime > 0) {
+                timeRemaining = parseInt(newTime);
+                updateTimerDisplay();
             }
         }
 
-        updateTimer();
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                alert("時間到！");
+            }
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
         function incrementHalfScore(player) {
             let scoreElement = document.getElementById(`half_score_${player}`);
-            let label = scoreElement.querySelector('.label');
             let currentScore = parseInt(scoreElement.querySelector('span').textContent);
 
-            // 如果当前值不是有效的数字（如 NaN），则从 0 开始
             if (isNaN(currentScore)) {
                 currentScore = 0;
             }
 
-            // 更新分数
             scoreElement.querySelector('span').textContent = currentScore + 1;
         }
 
         function incrementFullScore(player) {
             let scoreElement = document.getElementById(`full_score_${player}`);
-            let label = scoreElement.querySelector('.label');
             let currentScore = parseInt(scoreElement.querySelector('span').textContent);
 
-            // 如果当前值不是有效的数字（如 NaN），则从 0 开始
             if (isNaN(currentScore)) {
                 currentScore = 0;
             }
 
-            // 更新分数
             scoreElement.querySelector('span').textContent = currentScore + 1;
         }
 
-
-
-
         function toggleOsaekomi(player) {
-            let otherPlayer = (player === 'lucas') ? 'alexander' : 'lucas';
-            let currentButton = document.getElementById(`osaekomi_button_${player}`);
-            let otherButton = document.getElementById(`osaekomi_button_${otherPlayer}`);
+            let osaekomiElement = document.getElementById(`osaekomi_${player}`);
+            let currentScore = parseInt(osaekomiElement.textContent);
 
-            if (osaekomiTimers[player] !== null) {
-                // Stop the timer and reset to zero
-                clearInterval(osaekomiTimers[player]);
-                osaekomiTimers[player] = null;
-                osaekomiCounters[player] = 0;
-                document.getElementById(`osaekomi_${player}`).innerHTML = '0';
-                otherButton.classList.remove('disabled');
-            } else {
-                // Start the timer
-                osaekomiTimers[player] = setInterval(function() {
-                    osaekomiCounters[player]++;
-                    document.getElementById(`osaekomi_${player}`).innerHTML = osaekomiCounters[player];
-                }, 1000);
-                otherButton.classList.add('disabled');
+            if (isNaN(currentScore)) {
+                currentScore = 0;
             }
+
+            osaekomiElement.textContent = currentScore === 0 ? 1 : 0;
         }
-        
-        function cycleCoachStage(player) {
-            let s1Stage = document.getElementById(`coach_stage_s1_${player}`);
-            let s2Stage = document.getElementById(`coach_stage_s2_${player}`);
-            let hStage = document.getElementById(`coach_stage_H_${player}`);
 
-            if (s1Stage.innerHTML === '-') {
-                s1Stage.innerHTML = "s1";
-                s1Stage.classList.add("s1");
-            } else if (s2Stage.innerHTML === '-') {
-                s2Stage.innerHTML = "s2";
-                s2Stage.classList.add("s2");
-            } else if (hStage.innerHTML === '-') {
-                hStage.innerHTML = "H";
-                hStage.classList.add("H");
-            } else {
-                s1Stage.innerHTML = "-";
-                s1Stage.classList.remove("s1");
-                s2Stage.innerHTML = "-";
-                s2Stage.classList.remove("s2");
-                hStage.innerHTML = "-";
-                hStage.classList.remove("H");
+        function cycleCoachStage(player) {
+            let stages = ["-", "s", "s1", "s2"];
+            let stageElement = document.getElementById(`coach_stage_s2_${player}`);
+            let currentStage = stageElement.textContent;
+            let currentIndex = stages.indexOf(currentStage);
+
+            if (currentIndex === -1) {
+                currentIndex = 0;
             }
+
+            let nextStage = stages[(currentIndex + 1) % stages.length];
+            stageElement.textContent = nextStage;
         }
     </script>
-
 </body>
 </html>
