@@ -21,6 +21,7 @@
             {% for col in df.columns %}
               <th>{{ col }}</th>
             {% endfor %}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -31,6 +32,12 @@
               <input type="text" name="{{ i }}_{{ j }}" value="{{ df.iloc[i, j] }}">
             </td>
             {% endfor %}
+            <td>
+              <!-- Add After button for each row -->
+              <button type="submit" name="add_row_after" value="{{ i }}">Add After</button>
+              <!-- Delete button for each row -->
+              <button type="submit" name="delete_row" value="{{ i }}">Delete</button>
+            </td>
           </tr>
           {% endfor %}
         </tbody>

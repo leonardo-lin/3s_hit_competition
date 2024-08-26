@@ -61,34 +61,50 @@ def edit_file(filename):
     df.fillna("", inplace=True)
 
     if request.method == 'POST':
-        # 保存修改的數據
-        updated_data = {}
-        for key, value in request.form.items():
-            if key != 'save':
-                row, col = key.split('_')
-                updated_data[int(row)] = updated_data.get(int(row), {})
-                updated_data[int(row)][int(col)] = value
+        if 'save' in request.form:
+            # 保存修改的數據
+            updated_data = {}
+            for key, value in request.form.items():
+                if key not in ['save', 'add_row_after', 'delete_row']:
+                    row, col = key.split('_')
+                    row = int(row)
+                    col = int(col)
+                    updated_data[row] = updated_data.get(row, {})
+                    updated_data[row][col] = value
 
-        for row_idx, row_data in updated_data.items():
-            for col_idx, value in row_data.items():
-                df.iat[row_idx, col_idx] = value
+            # 確保 DataFrame 的大小與表單中的數據一致
+            max_row = max(updated_data.keys(), default=-1)
+            if max_row >= df.shape[0]:
+                # 添加新的空白行到 DataFrame
+                for _ in range(max_row - df.shape[0] + 1):
+                    df.loc[df.shape[0]] = [""] * len(df.columns)
+
+            # 更新 DataFrame
+            for row_idx, row_data in updated_data.items():
+                for col_idx, value in row_data.items():
+                    df.iat[row_idx, col_idx] = value
+
+            df.to_excel(filepath, index=False)
+            return render_template('edit_file.html', df=df, filename=filename, message="File saved successfully")
         
-        df.to_excel(filepath, index=False)
-        return render_template('edit_file.html', df=df, filename=filename, message="File saved successfully")
-        
-        elif 'add_row' in request.form:
-            # 新增一列
+        elif 'add_row_after' in request.form:
+            # 在特定行後添加新行
+            row_to_add_after = int(request.form['add_row_after'])
             new_row = pd.Series([""] * len(df.columns), index=df.columns)
-            df = df.append(new_row, ignore_index=True)
-            return render_template('edit_file.html', df=df, filename=filename)
+            # 使用 DataFrame 的 loc 來插入新行
+            df = pd.concat([df.iloc[:row_to_add_after + 1], pd.DataFrame([new_row]), df.iloc[row_to_add_after + 1:]]).reset_index(drop=True)
+            return render_template('edit_file.html', df=df, filename=filename, message=f"Row added after {row_to_add_after + 1}")
         
         elif 'delete_row' in request.form:
-            # 刪除最後一列
-            if not df.empty:
-                df = df[:-1]
-            return render_template('edit_file.html', df=df, filename=filename)
+            # 刪除指定的行
+            row_to_delete = int(request.form['delete_row'])
+            if 0 <= row_to_delete < df.shape[0]:
+                df = df.drop(index=row_to_delete).reset_index(drop=True)
+            df.to_excel(filepath, index=False)  # 保存刪除行後的結果
+            return render_template('edit_file.html', df=df, filename=filename, message=f"Row {row_to_delete + 1} deleted")
 
     return render_template('edit_file.html', df=df, filename=filename)
+
 
 
 # 第 3 個網頁：顯示 .xlsx 檔案內容（僅讀取）
@@ -106,7 +122,7 @@ def view(filename):
     return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
 
 # 第 3 個網頁：顯示所有.xlsx檔案表格
-@app.route('/view')
+@app.route('/display')
 def overview():
     folder_path = UPLOAD_FOLDER
     tables = []
@@ -130,6 +146,7 @@ def overview():
 
     # 將表格和文件名傳遞給模板
     return render_template('display.html', tables=tables)
+
 
 @app.route('/score')
 def index():
