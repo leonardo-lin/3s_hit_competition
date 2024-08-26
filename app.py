@@ -75,6 +75,18 @@ def edit_file(filename):
         
         df.to_excel(filepath, index=False)
         return render_template('edit_file.html', df=df, filename=filename, message="File saved successfully")
+        
+        elif 'add_row' in request.form:
+            # 新增一列
+            new_row = pd.Series([""] * len(df.columns), index=df.columns)
+            df = df.append(new_row, ignore_index=True)
+            return render_template('edit_file.html', df=df, filename=filename)
+        
+        elif 'delete_row' in request.form:
+            # 刪除最後一列
+            if not df.empty:
+                df = df[:-1]
+            return render_template('edit_file.html', df=df, filename=filename)
 
     return render_template('edit_file.html', df=df, filename=filename)
 
