@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比賽畫面</title>
+    <style>
+        body {
+            background-image: url('path/to/your/background-image.jpg'); /* 請替換為背景圖片的路徑 */
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            margin-top: 100px;
+        }
+        .header, .group, .players, .timer {
+            border: 2px solid white;
+            padding: 10px;
+            margin: 0 auto;
+            width: 300px;
+            box-sizing: border-box;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .group {
+            font-size: 20px;
+            line-height: 1.5;
+        }
+        .group .category {
+            color: red;
+        }
+        .players {
+            background-color: white;
+            margin-bottom: 0;
+        }
+        .player-a {
+            background-color: #1E90FF;
+            color: black;
+            font-size: 24px;
+            height: 80px;
+            line-height: 80px;
+        }
+        .player-b {
+            background-color: #32CD32;
+            color: black;
+            font-size: 24px;
+            height: 80px;
+            line-height: 80px;
+        }
+        .timer {
+            font-size: 50px;
+            margin-top: 0;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">場序3</div>
+        <div class="group">
+            <div class="category">組別</div>
+            <div>社會男子組</div>
+            <div>-81KG</div>
+        </div>
+        <div class="players player-a">選手A</div>
+        <div class="players player-b">選手B</div>
+        <div class="timer">04:00</div>
+    </div>
+</body>
+</html>

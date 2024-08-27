@@ -108,18 +108,18 @@ def edit_file(filename):
 
 
 # 第 3 個網頁：顯示 .xlsx 檔案內容（僅讀取）
-@app.route('/view/<filename>')
-def view(filename):
-    filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
-    if not os.path.exists(filepath):
-        return 'File not found'
+# @app.route('/view/<filename>')
+# def view(filename):
+#     filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
+#     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
+#     if not os.path.exists(filepath):
+#         return 'File not found'
     
-    # 讀取 Excel 檔案
-    df = pd.read_excel(filepath)
-    # print(df)
-    # 顯示檔案內容
-    return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
+#     # 讀取 Excel 檔案
+#     df = pd.read_excel(filepath)
+#     # print(df)
+#     # 顯示檔案內容
+#     return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
 
 # 第 3 個網頁：顯示所有.xlsx檔案表格
 @app.route('/display')
@@ -148,9 +148,38 @@ def overview():
     return render_template('display.html', tables=tables)
 
 
-@app.route('/score')
+
+
+@app.route('/wscore')
 def index():
-    return render_template('score.html')
+    # 列出compitions資料夾下的xlsx檔案
+    folder_path = './competitions'
+    files = [f for f in os.listdir(folder_path) if f.endswith('.xlsx')]
+    return render_template('wrest_score.html', files=files,data_loaded=False)
+
+@app.route('/wload_data', methods=['POST'])
+def load_data():
+    filename = request.form['filename']
+    filepath = os.path.join('./competitions', filename)
+    
+    df = pd.read_excel(filepath)
+
+    # 查找索引4或5沒有內容的一列
+    row = df[(df.iloc[:, 4].isna()) | (df.iloc[:, 5].isna())].iloc[0]
+
+    # 提取變數
+    number = row[0]
+    subject = row[1]
+    player1 = row[2]
+    player2 = row[3]
+
+    return render_template('wrest_score.html', 
+                           files=[filename], 
+                           number=number, 
+                           subject=subject, 
+                           player1=player1, 
+                           player2=player2,
+                           data_loaded=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
