@@ -107,19 +107,6 @@ def edit_file(filename):
 
 
 
-# 第 3 個網頁：顯示 .xlsx 檔案內容（僅讀取）
-# @app.route('/view/<filename>')
-# def view(filename):
-#     filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
-#     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
-#     if not os.path.exists(filepath):
-#         return 'File not found'
-    
-#     # 讀取 Excel 檔案
-#     df = pd.read_excel(filepath)
-#     # print(df)
-#     # 顯示檔案內容
-#     return render_template('view.html', tables=[df.to_html(classes='data')], filename=filename)
 
 # 第 3 個網頁：顯示所有.xlsx檔案表格
 @app.route('/display')
