@@ -10,71 +10,179 @@
             font-family: Arial, sans-serif;
             color: white;
             text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            margin-top: 50px;
+            width: 90%;
+            max-width: 600px;
+            box-sizing: border-box;
         }
         .header, .group, .players, .timer {
             border: 2px solid white;
             padding: 10px;
             margin-bottom: 20px;
+            box-sizing: border-box;
         }
         .header {
-            display: inline-block;
-            background-color: transparent;
-        }
-        .header span {
-            font-size: 24px;
+            font-size: 22px;
         }
         .group {
-            font-size: 24px;
+            font-size: 18px;
+            line-height: 1.2;
         }
         .group .category {
             color: red;
         }
-        .players {
-            display: flex;
-            justify-content: space-between;
-            background-color: #1E90FF;
-            height: 200px;
-            line-height: 200px;
-            font-size: 30px;
+        .players-container {
+            margin-bottom: 50px;
         }
-        .players .player-b {
-            background-color: #32CD32;
+        .players {
+            background-color: white;
+            margin-bottom: 0;
+            position: relative;
+            height: 150px;
             line-height: normal;
         }
-        .players div {
+        .player-a {
+            background-color: #1E90FF;
+            color: black;
+        }
+        .player-b {
+            background-color: #32CD32;
+            color: black;
+        }
+        .country-code {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            font-size: 21px;
+            color: white;
+            transform: translateY(-50%);
+        }
+        .medal-area_A {
+            position: absolute;
+            top: 50px;
+            left: 30%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .medal-area_B {
+            position: absolute;
+            bottom: 50px;
+            left: 30%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .medal-box {
+            width: 30px;
+            height: 30px;
+            border: 2px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: red;
+            background-color: white;
+        }
+        .score-area_A {
+            position: absolute;
+            bottom: 15px;
+            left: 30%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .score-area_B {
+            position: absolute;
+            top: 15px;
+            left: 30%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .score-box {
+            width: 30px;
+            height: 30px;
+            border: 2px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: black;
+            background-color: white;
+        }
+        .player-name {
+            position: absolute;
             width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-            padding: 0;
+            font-size: 25px;
+            color: white;
+            padding: 2px;
+        }
+        .player-a .player-name {
+            top: 0;
+            left: 0;
+        }
+        .player-b .player-name {
+            bottom: 0;
+            left: 0;
+        }
+        .space {
+            background-color: white;
+            height: 15px;
         }
         .timer {
-            font-size: 50px;
-            background-color: #000080;
+            font-size: 45px;
+            background-color: transparent;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <span>場序3</span>
-        </div>
+        <div class="header">場序3</div>
         <div class="group">
             <div class="category">組別</div>
             <div>社會男子組</div>
             <div>-81KG</div>
         </div>
-        <div class="players">
-            <div>選手A</div>
+        <div class="players-container">
+            <div class="players player-a">
+                <div class="player-name">選手一</div>
+                <div class="country-code">TPE</div>
+                <div class="medal-area_A">
+                    <div class="medal-box">G</div>
+                    <div class="medal-box">D</div>
+                    <div class="medal-box">T</div>
+                </div>
+                <div class="score-area_A">
+                    <div class="score-box">0</div>
+                    <div class="score-box">0</div>
+                    <div class="score-box">0</div>
+                </div>
+            </div>
+            <div class="space"></div>
+            <div class="players player-b">
+                <div class="country-code">UZB</div>
+                <div class="medal-area_B">
+                    <div class="medal-box">G</div>
+                    <div class="medal-box">D</div>
+                    <div class="medal-box">T</div>
+                </div>
+                <div class="score-area_B">
+                    <div class="score-box">0</div>
+                    <div class="score-box">0</div>
+                    <div class="score-box">0</div>
+                </div>
+                <div class="player-name">選手二</div>
+            </div>
         </div>
-        <div class="players player-b">
-            <div>選手B</div>
-        </div>
-        <div class="timer">
-            04:00
-        </div>
+        <div class="timer">04:00</div>
     </div>
 </body>
 </html>
