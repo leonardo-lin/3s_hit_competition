@@ -40,6 +40,7 @@
         }
         .players-container {
             margin-bottom: 50px;
+            position: relative;
         }
         .players {
             background-color: white;
@@ -67,7 +68,7 @@
         .medal-area_A {
             position: absolute;
             top: 50px;
-            left: 30%;
+            left: 40%;
             transform: translateX(-50%);
             display: flex;
             gap: 5px;
@@ -75,13 +76,13 @@
         .medal-area_B {
             position: absolute;
             bottom: 50px;
-            left: 30%;
+            left: 40%;
             transform: translateX(-50%);
             display: flex;
             gap: 5px;
         }
         .medal-box {
-            width: 30px;
+            width: 60px;
             height: 30px;
             border: 2px solid black;
             display: flex;
@@ -94,7 +95,7 @@
         .score-area_A {
             position: absolute;
             bottom: 15px;
-            left: 30%;
+            left: 40%;
             transform: translateX(-50%);
             display: flex;
             gap: 5px;
@@ -102,13 +103,13 @@
         .score-area_B {
             position: absolute;
             top: 15px;
-            left: 30%;
+            left: 40%;
             transform: translateX(-50%);
             display: flex;
             gap: 5px;
         }
         .score-box {
-            width: 30px;
+            width: 60px;
             height: 30px;
             border: 2px solid black;
             display: flex;
@@ -117,7 +118,7 @@
             font-size: 14px;
             color: black;
             background-color: white;
-        }
+        }        
         .player-name {
             position: absolute;
             width: 100%;
@@ -140,6 +141,19 @@
         .timer {
             font-size: 45px;
             background-color: transparent;
+        }
+        .yellow-boxes {
+            position: absolute;
+            right: 5%;
+            top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .yellow-box {
+            width: 50px;
+            height: 35px;
+            background-color: yellow;
         }
     </style>
 </head>
@@ -165,6 +179,11 @@
                     <div class="score-box">0</div>
                     <div class="score-box">0</div>
                 </div>
+                <div class="yellow-boxes">
+                    <div class="yellow-box"></div>
+                    <div class="yellow-box"></div>
+                    <div class="yellow-box"></div>
+                </div>
             </div>
             <div class="space"></div>
             <div class="players player-b">
@@ -178,6 +197,11 @@
                     <div class="score-box">0</div>
                     <div class="score-box">0</div>
                     <div class="score-box">0</div>
+                </div>
+                <div class="yellow-boxes">
+                    <div class="yellow-box"></div>
+                    <div class="yellow-box"></div>
+                    <div class="yellow-box"></div>
                 </div>
                 <div class="player-name">選手二</div>
             </div>
