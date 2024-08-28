@@ -184,7 +184,7 @@
     <div class="container">
         <!-- 選單區域：僅當 data_loaded 為 False 時顯示 -->
         {% if not data_loaded %}
-        <form action="/jload_data" method="POST">
+        <form action="/kycload_data" method="POST">
             <label for="filename" class="file-select">選擇比賽項目:</label>
             <select name="filename" id="filename">
                 {% for file in files %}
@@ -206,16 +206,16 @@
                 <div class="player-name">{{ player1 or "選手一" }}</div>
                 <div class="country-code">TPE</div>
                 <div class="medal-area_A">
-                    <div class="medal-box">I</div>
-                    <div class="medal-box">W</div>
+                    <div class="medal-box">G</div>
+                    <div class="medal-box">D</div>
+                    <div class="medal-box">T</div>
                 </div>
                 <div class="score-area_A">
                     <div class="score-box" onclick="incrementScore(this)">0</div>
                     <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" onclick="incrementScore(this)">0</div>
                 </div>
                 <div class="yellow-boxes player-a-yellow-boxes">
-                    <div class="yellow-box"></div>
-                    <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-a-yellow-boxes')">黃牌</button>
@@ -224,16 +224,16 @@
             <div class="players player-b">
                 <div class="country-code">UZB</div>
                 <div class="medal-area_B">
-                    <div class="medal-box">I</div>
-                    <div class="medal-box">W</div>
+                    <div class="medal-box">G</div>
+                    <div class="medal-box">D</div>
+                    <div class="medal-box">T</div>
                 </div>
                 <div class="score-area_B">
                     <div class="score-box" onclick="incrementScore(this)">0</div>
                     <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" onclick="incrementScore(this)">0</div>
                 </div>
                 <div class="yellow-boxes player-b-yellow-boxes">
-                    <div class="yellow-box"></div>
-                    <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes')">黃牌</button>
