@@ -4,6 +4,11 @@ import os
 
 app = Flask(__name__)
 
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 # 設定檔案上傳的目錄
 UPLOAD_FOLDER = 'competitions'
 if not os.path.exists(UPLOAD_FOLDER):

@@ -1,84 +1,84 @@
 body {
-            background-color: #3f165a;
-            font-family: Arial, sans-serif;
-            color: white;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .container {
-            text-align: center;
-        }
-        .info {
-            margin-top: 20px;
-            font-size: 1.5em;
-            border: 2px solid white;
-            color: red;
-        }
-        .scoreboard {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .team {
-            width: 200px;
-            padding: 20px;
-            margin: 10px;
-            box-sizing: border-box;
-        }
-        .team.blue {
-            background-color: #1a6db6;
-            border: 2px solid white;
-        }
-        .team.red {
-            background-color: #c62828;
-            border: 2px solid white;
-        }
-        .team-name {
-            font-size: 1.2em;
-            border: 2px solid white;
-            margin-bottom: 10px;
-        }
-        .team-member {
-            font-size: 1.2em;
-            border: 2px solid white;
-            margin-bottom: 20px;
-        }
-        .score {
-            font-size: 3em;
-            border: 2px solid white;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .leader {
-            font-size: 1.2em;
-            margin-top: -15px;
-            cursor: pointer;
-            height: 30px;
-            line-height: 30px;
-            color: black;
-        }
-        .timer-container {
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .timer {
-            font-size: 3em;
-            color: yellow;
-            cursor: pointer;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .settings-button {
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
-        .file-select {
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
+    background-color: #3f165a;
+    font-family: Arial, sans-serif;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.container {
+    text-align: center;
+}
+.info {
+    margin-top: 20px;
+    font-size: 1.5em;
+    border: 2px solid white;
+    color: red;
+}
+.scoreboard {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.team {
+    width: 200px;
+    padding: 20px;
+    margin: 10px;
+    box-sizing: border-box;
+}
+.team.blue {
+    background-color: #1a6db6;
+    border: 2px solid white;
+}
+.team.red {
+    background-color: #c62828;
+    border: 2px solid white;
+}
+.team-name {
+    font-size: 1.2em;
+    border: 2px solid white;
+    margin-bottom: 10px;
+}
+.team-member {
+    font-size: 1.2em;
+    border: 2px solid white;
+    margin-bottom: 20px;
+}
+.score {
+    font-size: 3em;
+    border: 2px solid white;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.leader {
+    font-size: 1.2em;
+    margin-top: -15px;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    color: black;
+}
+.timer-container {
+    display: inline-block;
+    margin-top: 20px;
+}
+.timer {
+    font-size: 3em;
+    color: yellow;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+}
+.settings-button {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+.file-select {
+    margin-top: 20px;
+    font-size: 1.5em;
+}
