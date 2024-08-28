@@ -1,74 +1,212 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>比賽畫面</title>
+    <title>比賽項目組別</title>
     <style>
         body {
-            background-image: url('path/to/your/background-image.jpg'); /* 請替換為背景圖片的路徑 */
-            background-size: cover;
+            background-color: #3f165a;
             font-family: Arial, sans-serif;
             color: white;
-            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
         .container {
-            margin-top: 100px;
+            text-align: center;
         }
-        .header, .group, .players, .timer {
+        .info {
+            margin-top: 20px;
+            font-size: 1.5em;
             border: 2px solid white;
-            padding: 10px;
-            margin: 0 auto;
-            width: 300px;
-            box-sizing: border-box;
-        }
-        .header {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .group {
-            font-size: 20px;
-            line-height: 1.5;
-        }
-        .group .category {
             color: red;
         }
-        .players {
-            background-color: white;
-            margin-bottom: 0;
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
-        .player-a {
-            background-color: #1E90FF;
-            color: black;
-            font-size: 24px;
-            height: 80px;
-            line-height: 80px;
+        .team {
+            width: 200px;
+            padding: 20px;
+            margin: 10px;
+            box-sizing: border-box;
         }
-        .player-b {
-            background-color: #32CD32;
+        .team.blue {
+            background-color: #1a6db6;
+            border: 2px solid white;
+        }
+        .team.red {
+            background-color: #c62828;
+            border: 2px solid white;
+        }
+        .team-name {
+            font-size: 1.2em;
+            border: 2px solid white;
+            margin-bottom: 10px;
+        }
+        .team-member {
+            font-size: 1.2em;
+            border: 2px solid white;
+            margin-bottom: 20px;
+        }
+        .score {
+            font-size: 3em;
+            border: 2px solid white;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .leader {
+            font-size: 1.2em;
+            margin-top: -15px;
+            cursor: pointer;
+            height: 30px;
+            line-height: 30px;
             color: black;
-            font-size: 24px;
-            height: 80px;
-            line-height: 80px;
+        }
+        .timer-container {
+            display: inline-block;
+            margin-top: 20px;
         }
         .timer {
-            font-size: 50px;
-            margin-top: 0;
-            background-color: transparent;
+            font-size: 3em;
+            color: yellow;
+            cursor: pointer;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .settings-button {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        .file-select {
+            margin-top: 20px;
+            font-size: 1.5em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">場序3</div>
-        <div class="group">
-            <div class="category">組別</div>
-            <div>社會男子組</div>
-            <div>-81KG</div>
+        <!-- 選單區域：僅當 data_loaded 為 False 時顯示 -->
+        {% if not data_loaded %}
+        <form action="/wload_data" method="POST">
+            <label for="filename" class="file-select">選擇比賽項目:</label>
+            <select name="filename" id="filename">
+                {% for file in files %}
+                <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">載入</button>
+        </form>
+        {% endif %}
+
+        <!-- 比賽資訊 -->
+        <div class="info">
+            <div>{{ subject or "社會男子組-81KG" }}</div>
+            <hr style="border: 0; border-top: 1px solid white;">
+            <div>{{ number or "總場128" }}</div>
         </div>
-        <div class="players player-a">選手A</div>
-        <div class="players player-b">選手B</div>
-        <div class="timer">04:00</div>
+
+        <!-- 計分板 -->
+        <div class="scoreboard">
+            <div class="team blue">
+                <div class="team-name">TPE</div>
+                <div class="team-member">{{ player1 or "馮冠傑" }}</div>
+                <div class="score" onclick="incrementScore(this)">0</div>
+                <div class="leader" onclick="toggleLeader(this)"></div>
+            </div>
+            <div class="team red">
+                <div class="team-name">UZB</div>
+                <div class="team-member">{{ player2 or "馮冠傑" }}</div>
+                <div class="score" onclick="incrementScore(this)">0</div>
+                <div class="leader" onclick="toggleLeader(this)"></div>
+            </div>
+        </div>
+
+        <div class="timer-container">
+            <div class="timer" onclick="toggleTimer()">04:00</div>
+            <button class="settings-button" onclick="openSettings()" style="background: none; border: none; cursor: pointer;">
+                <img src="https://img.icons8.com/material-outlined/48/ffffff/settings.png" alt="Settings Icon">
+            </button>
+        </div>
     </div>
+
+    <script>
+        let timerInterval;
+        let isTimerRunning = false;
+        let timeRemaining = 240;
+
+        function incrementScore(element) {
+            let score = parseInt(element.innerText);
+            element.innerText = score + 1;
+        }
+
+        function toggleLeader(element) {
+            if (element.innerText === "") {
+                element.innerText = "領先方";
+                element.style.backgroundColor = "yellow";
+                element.style.color = "black";
+            } else {
+                element.innerText = "";
+                element.style.backgroundColor = "";
+                element.style.color = "black";
+            }
+        }
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                alert("時間到！");
+            }
+        }
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            document.querySelector('.timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
+        function setTimer(minutes, seconds) {
+            timeRemaining = minutes * 60 + seconds;
+            updateTimerDisplay();
+        }
+
+        function openSettings() {
+            let timeInput = prompt("請輸入倒數時間 (格式: MM:SS)", "5:00");
+            if (timeInput) {
+                let timerParts = timeInput.split(':');
+                let minutes = parseInt(timerParts[0]);
+                let seconds = parseInt(timerParts[1]);
+                if (!isNaN(minutes) && !isNaN(seconds)) {
+                    setTimer(minutes, seconds);
+                } else {
+                    alert("請輸入有效的時間格式");
+                }
+            }
+        }
+
+        document.querySelector('.timer').addEventListener('dblclick', function() {
+            openSettings();
+        });
+    </script>
 </body>
 </html>
