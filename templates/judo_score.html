@@ -6,6 +6,23 @@
     <title>比賽畫面</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='kyc_judo_styles.css') }}">
     <style>
+        .takedown-time {
+            width: 60px;
+            height: 30px;
+            left: 5%;
+            display: flex;
+            align-items: center;  /* 垂直居中 */
+            justify-content: center;  /* 水平居中 */
+            background-color: transparent;  /* 若不希望有背景色，設為透明 */
+            border: none;  /* 移除邊框 */
+            cursor: pointer;  /* 讓滑鼠游標變為手型 */
+            padding: 0;  /* 如果有不必要的 padding，可以设置为0 */
+            margin: 0;  /* 检查 margin，确保元素不被不必要地向下推 */
+            position: relative;  /* 使 z-index 生效 */
+            z-index: 10; 
+            
+        }
+
     </style>
 </head>
 <body>
@@ -30,41 +47,40 @@
             <!-- <div>-81KG</div> -->
         </div>
         <div class="players-container">
-            <div class="players player-a">
-                <div class="player-name">{{ player1_name or "選手一" }}</div>
-                <div class="country-code">{{player1_place or "TPE"}}</div>
-                <div class="medal-area_A">
-                    <div class="medal-box">I</div>
-                    <div class="medal-box">W</div>
-                </div>
+            <div class="players player-a" style="background-color: white;">
+                <div class="takedown-time" id="player1-score" onclick="takedownIncrement('player1-score', document.querySelector('.player-b .score-box'))">0</div>
+                <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
+                <div class="player-name ">{{ player1_name or "選手一" }}</div>
+                <div class="country-code" style="color: black;">{{player1_place or "TPE"}}</div>
+                
                 <div class="score-area_A">
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" onclick="incrementScore(this)" style="width: 120px;height: 60px;">0</div>
                 </div>
                 <div class="yellow-boxes player-a-yellow-boxes">
                     <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
                     <div class="red-box"></div>
                 </div>
-                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-a-yellow-boxes')">黃牌</button>
+                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-a-yellow-boxes', document.querySelector('.player-b .score-box'))">黃牌</button>
             </div>
-            <div class="space"></div>
-            <div class="players player-b">
-                <div class="country-code">{{player2_place or "UZB"}}</div>
-                <div class="medal-area_B">
+            <div class="players player-b" style="background-color: #1E90FF;">
+                <div class="country-code" style="color: black;">{{player2_place or "UZB"}}</div>
+                <!-- <div class="medal-area_B">
                     <div class="medal-box">I</div>
                     <div class="medal-box">W</div>
-                </div>
+                </div> -->
                 <div class="score-area_B">
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" onclick="incrementScore(this)" style="width: 120px;height: 60px;">0</div>
+                    <!-- <div class="score-box" onclick="incrementScore(this)">0</div> -->
                 </div>
                 <div class="yellow-boxes player-b-yellow-boxes">
                     <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
                     <div class="red-box"></div>
                 </div>
-                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes')">黃牌</button>
+                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes', document.querySelector('.player-a .score-box'))">黃牌</button>
+                <div class="takedown-time" id="player2-score" onclick="takedownIncrement('player2-score', document.querySelector('.player-a .score-box'))">0</div>
+                <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
                 <div class="player-name">{{ player2_name or "選手二" }}</div>
             </div>
         </div>
@@ -80,7 +96,41 @@
     </div>
     <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
     <script >
-        function toggleYellowBoxes(className) {
+
+        let intervals = {};
+
+        function takedownIncrement(elementId, opponentScoreElement) {
+            let element = document.getElementById(elementId);
+
+            // 如果计时器正在运行，则停止计时并将分数重置为0
+            if (intervals[elementId]) {
+                clearInterval(intervals[elementId]);
+                intervals[elementId] = null;
+                element.innerText = '0';  // 将分数重置为0
+            } else {
+                // 如果计时器没有运行，则启动计时器并每秒增加分数
+                intervals[elementId] = setInterval(function() {
+                    let score = parseInt(element.innerText, 10);  // 将目前分数转为十进制
+                    score += 1;  // 分数增加1
+                    element.innerText = score;  // 更新分数显示
+
+                    // 在分数达到10和20时，触发对方的incrementScore
+                    if (score === 10 || score === 20) {
+                        incrementScore(opponentScoreElement);
+                    }
+
+                }, 1000);  // 每秒增加1
+            }
+        }
+
+        function incrementScore(element) {
+            let score = parseInt(element.innerText, 2);  // 将内部文本作为二进制数字解析
+            score += 1;  // 将分数增加1
+            element.innerText = score.toString(2);  // 将分数转换为二进制字符串并更新显示
+        }
+
+
+        function toggleYellowBoxes(className, opponentScoreElement) {
             const yellowBoxes = document.querySelectorAll(`.${className} .yellow-box`);
             const redBox = document.querySelector(`.${className} .red-box`);
             let visibleYellowCount = Array.from(yellowBoxes).filter(box => box.style.visibility === 'visible').length;
@@ -89,6 +139,9 @@
                 yellowBoxes[visibleYellowCount].style.visibility = 'visible';
             } else if (redBox && redBox.style.visibility !== 'visible') {
                 redBox.style.visibility = 'visible';
+                // 當紅牌顯示時，對手分數增加兩次
+                incrementScore(opponentScoreElement);
+                incrementScore(opponentScoreElement);
             } else {
                 yellowBoxes.forEach(box => box.style.visibility = 'hidden');
                 if (redBox) {
@@ -96,8 +149,12 @@
                 }
             }
         }
+
         function showRefreshButton() {
             document.querySelector('.refresh-button').style.display = 'inline';
+        }
+        function refreshPage() {
+            window.location.reload();
         }
 
     </script>

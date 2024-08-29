@@ -116,12 +116,12 @@ body {
     position: absolute;
     width: 100%;
     font-size: 25px;
-    color: white;
+    color: black;
     padding: 2px;
 }
 .player-a .player-name {
     top: 0;
-    left: 0;
+    left: 0%;
 }
 .player-b .player-name {
     bottom: 0;
