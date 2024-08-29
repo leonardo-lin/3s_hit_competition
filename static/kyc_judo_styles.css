@@ -176,3 +176,9 @@ body {
     margin-top: 20px;
     font-size: 1.5em;
 }
+.crown-icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-left: 5px !important;
+    vertical-align: middle !important;
+}
