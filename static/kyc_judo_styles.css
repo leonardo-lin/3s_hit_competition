@@ -83,7 +83,7 @@ body {
     align-items: center;
     font-size: 14px;
     color: red;
-    /* background-color: white; */
+    background-color: transparent;
 }
 .score-area_A {
     position: absolute;
@@ -110,7 +110,7 @@ body {
     align-items: center;
     font-size: 14px;
     color: black;
-    background-color: white;
+    background-color: transparent;
 }        
 .player-name {
     position: absolute;
@@ -176,9 +176,17 @@ body {
     margin-top: 20px;
     font-size: 1.5em;
 }
-.crown-icon {
-    width: 20px !important;
-    height: 20px !important;
-    margin-left: 5px !important;
-    vertical-align: middle !important;
+.refresh-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
+.refresh-button img {
+    width: 24px;  /* 根据需要调整图片大小 */
+    height: 24px; /* 根据需要调整图片大小 */
+    margin-left: 10px;  /* 调整与设置按钮的间距 */
+    cursor: pointer;
+    visibility: hidden;
+}
+

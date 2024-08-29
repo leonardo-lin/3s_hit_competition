@@ -28,7 +28,18 @@
             margin-left: 5px;  /* 调整与姓名的间距 */
             vertical-align: middle; /* 图片与文本垂直对齐 */
         }
-
+        .refresh-button {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .refresh-button img {
+            width: 30px;  /* 根据需要调整图片大小 */
+            height: 30px; /* 根据需要调整图片大小 */
+            margin-left: 10px;  /* 调整与设置按钮的间距 */
+            cursor: pointer;
+        }
 
         
     </style>
@@ -60,14 +71,14 @@
                 </div>
                 <div class="country-code">{{player1_place or "TPE"}}</div>
                 <div class="medal-area_A">
-                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 0)">G</div>
-                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 1)">D</div>
-                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 2)">T</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 0)">G</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 1)">D</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 2)">T</div>
                 </div>
                 <div class="score-area_A">
-                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
                 </div>
             </div>
             <div class="kyc-label">
@@ -78,14 +89,14 @@
             <div class="players player-b">
                 <div class="country-code">{{player2_place or "UZB"}}</div>
                 <div class="medal-area_B">
-                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 0)">G</div>
-                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 1)">D</div>
-                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 2)">T</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 0)">G</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 1)">D</div>
+                    <div class="medal-box" style="color: red; background-color: transparent;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 2)">T</div>
                 </div>
                 <div class="score-area_B">
-                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: transparent;" onclick="incrementScore(this)">0</div>
                 </div>
                 <div class="player-name">
                     <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
@@ -97,6 +108,9 @@
             <div class="timer" onclick="toggleTimer()">04:00</div>
             <button class="settings-button" onclick="openSettings()" style="background: none; border: none; cursor: pointer;">
                 <img src="https://img.icons8.com/material-outlined/48/ffffff/settings.png" alt="Settings Icon">
+            </button>
+            <button class="refresh-button" onclick="refreshPage()" style="background: none; border: none; cursor: pointer;">
+                <img src="https://img.icons8.com/material-outlined/48/ffffff/refresh.png" alt="Refresh Icon">
             </button>
         </div>
     </div>
@@ -152,11 +166,13 @@
 
             if (playerAScore1 === 1 || playerAScore2 === 2) {
                 document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                showRefreshButton();
                 stopTimerAndHighlight();
             }
 
             if (playerBScore1 === 1 || playerBScore2 === 2) {
                 document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                showRefreshButton();
                 stopTimerAndHighlight();
             }
         }
@@ -193,24 +209,32 @@
             // 判定 score box 2 的得分
             if (playerAScore2 > playerBScore2) {
                 document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                showRefreshButton();
             } else if (playerBScore2 > playerAScore2) {
                 document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                showRefreshButton();
             } else { // 若 score box 2 得分相同
                 if (playerAScore.D > playerBScore.D) {
                     document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                    showRefreshButton();
                 } else if (playerBScore.D > playerAScore.D) {                
                     document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                    showRefreshButton();
                 } else {
                     // 判定 score box 3 的得分
                     if (playerAScore3 > playerBScore3) {
                         document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                        showRefreshButton();
                     } else if (playerBScore3 > playerAScore3) {
                         document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                        showRefreshButton();
                     } else { // 若 score box 3 得分相同
                         if (playerAScore.T > playerBScore.T) {
                             document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                            showRefreshButton();
                         } else if (playerBScore.T > playerAScore.T) {
                             document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                            showRefreshButton();
                         } else {
                             // 如果所有条件都相同，最后得分者胜
                             if (timeRemaining % 2 === 0) {
@@ -218,13 +242,16 @@
                             } else {
                                 document.querySelector('.player-b .crown-icon').style.display = 'inline';
                             }
+                            showRefreshButton();
                         }
                     }
                 }
             }
         }
 
-
+        function showRefreshButton() {
+            document.querySelector('.refresh-button').style.display = 'inline';
+        }
 
         function updateTimerDisplay() {
             let minutes = Math.floor(timeRemaining / 60);
@@ -263,6 +290,9 @@
         document.querySelector('.timer').addEventListener('dblclick', function() {
             openSettings();
         });
+        function refreshPage() {
+            window.location.reload();
+        }
 
 
     </script>
