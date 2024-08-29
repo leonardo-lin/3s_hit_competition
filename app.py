@@ -237,11 +237,9 @@ def jload_data():
     number = row[0]
     subject = row[1]
     player1 = row[2].split(' ')
-    print(player1)
     player1_place = player1[0]
     player1_name = player1[1]
     player2 = row[3].split(' ')
-    print(player2)
     player2_place = player2[0]
     player2_name = player2[1]
 

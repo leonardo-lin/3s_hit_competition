@@ -73,6 +73,9 @@
             <button class="settings-button" onclick="openSettings()" style="background: none; border: none; cursor: pointer;">
                 <img src="https://img.icons8.com/material-outlined/48/ffffff/settings.png" alt="Settings Icon">
             </button>
+            <button class="refresh-button" onclick="refreshPage()" style="background: none; border: none; cursor: pointer;">
+                <img src="https://img.icons8.com/material-outlined/48/ffffff/refresh.png" alt="Refresh Icon">
+            </button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
@@ -92,6 +95,9 @@
                     redBox.style.visibility = 'hidden';
                 }
             }
+        }
+        function showRefreshButton() {
+            document.querySelector('.refresh-button').style.display = 'inline';
         }
 
     </script>
