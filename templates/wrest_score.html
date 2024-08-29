@@ -31,14 +31,14 @@
         <!-- 計分板 -->
         <div class="scoreboard">
             <div class="team blue">
-                <div class="team-name">TPE</div>
-                <div class="team-member">{{ player1 or "選手一" }}</div>
+                <div class="team-name">{{player1_place or "TPE"}}</div>
+                <div class="team-member">{{ player1_name or "選手一" }}</div>
                 <div class="score" onclick="incrementScore(this)">0</div>
                 <div class="leader" onclick="toggleLeader(this)"></div>
             </div>
             <div class="team red">
-                <div class="team-name">UZB</div>
-                <div class="team-member">{{ player2 or "選手二" }}</div>
+                <div class="team-name">{{player2_place or "UZB"}}</div>
+                <div class="team-member">{{ player2_name or "選手二" }}</div>
                 <div class="score" onclick="incrementScore(this)">0</div>
                 <div class="leader" onclick="toggleLeader(this)"></div>
             </div>

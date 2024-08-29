@@ -29,8 +29,8 @@
         </div>
         <div class="players-container">
             <div class="players player-a">
-                <div class="player-name">{{ player1 or "選手一" }}</div>
-                <div class="country-code">TPE</div>
+                <div class="player-name">{{ player1_name or "選手一" }}</div>
+                <div class="country-code">{{player1_place or "TPE"}}</div>
                 <div class="medal-area_A">
                     <div class="medal-box">I</div>
                     <div class="medal-box">W</div>
@@ -48,7 +48,7 @@
             </div>
             <div class="space"></div>
             <div class="players player-b">
-                <div class="country-code">UZB</div>
+                <div class="country-code">{{player2_place or "UZB"}}</div>
                 <div class="medal-area_B">
                     <div class="medal-box">I</div>
                     <div class="medal-box">W</div>
@@ -63,7 +63,7 @@
                     <div class="red-box"></div>
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes')">黃牌</button>
-                <div class="player-name">{{ player2 or "選手二" }}</div>
+                <div class="player-name">{{ player2_name or "選手二" }}</div>
             </div>
         </div>
         <div class="timer-container">

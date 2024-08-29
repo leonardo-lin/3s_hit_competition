@@ -162,15 +162,21 @@ def wload_data():
     # 提取變數
     number = row[0]
     subject = row[1]
-    player1 = row[2]
-    player2 = row[3]
+    player1 = row[2].split(' ')
+    player1_place = player1[0]
+    player1_name = player1[1]
+    player2 = row[3].split(' ')
+    player2_place = player2[0]
+    player2_name = player2[1]
 
     return render_template('wrest_score.html', 
                            files=[filename], 
                            number=number, 
                            subject=subject, 
-                           player1=player1, 
-                           player2=player2,
+                           player1_name=player1_name, 
+                           player1_place=player1_place,
+                           player2_name=player2_name,
+                           player2_place=player2_place,
                            data_loaded=True)
 
 @app.route('/kycscore')
@@ -193,15 +199,21 @@ def kycload_data():
     # 提取變數
     number = row[0]
     subject = row[1]
-    player1 = row[2]
-    player2 = row[3]
+    player1 = row[2].split(' ')
+    player1_place = player1[0]
+    player1_name = player1[1]
+    player2 = row[3].split(' ')
+    player2_place = player2[0]
+    player2_name = player2[1]
 
     return render_template('kyc_score.html', 
                            files=[filename], 
                            number=number, 
                            subject=subject, 
-                           player1=player1, 
-                           player2=player2,
+                           player1_name=player1_name, 
+                           player1_place=player1_place,
+                           player2_name=player2_name,
+                           player2_place=player2_place,
                            data_loaded=True)
 
 @app.route('/jscore')
@@ -224,15 +236,23 @@ def jload_data():
     # 提取變數
     number = row[0]
     subject = row[1]
-    player1 = row[2]
-    player2 = row[3]
+    player1 = row[2].split(' ')
+    print(player1)
+    player1_place = player1[0]
+    player1_name = player1[1]
+    player2 = row[3].split(' ')
+    print(player2)
+    player2_place = player2[0]
+    player2_name = player2[1]
 
     return render_template('judo_score.html', 
                            files=[filename], 
                            number=number, 
                            subject=subject, 
-                           player1=player1, 
-                           player2=player2,
+                           player1_name=player1_name, 
+                           player1_place=player1_place,
+                           player2_name=player2_name,
+                           player2_place=player2_place,
                            data_loaded=True)
 
 
