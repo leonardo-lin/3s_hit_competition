@@ -42,7 +42,7 @@
                 <div class="yellow-boxes player-a-yellow-boxes">
                     <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
-                    <div class="yellow-box"></div>
+                    <div class="red-box"></div>
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-a-yellow-boxes')">黃牌</button>
             </div>
@@ -60,7 +60,7 @@
                 <div class="yellow-boxes player-b-yellow-boxes">
                     <div class="yellow-box"></div>
                     <div class="yellow-box"></div>
-                    <div class="yellow-box"></div>
+                    <div class="red-box"></div>
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes')">黃牌</button>
                 <div class="player-name">{{ player2 or "選手二" }}</div>
@@ -74,6 +74,17 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
-    <script src="{{ url_for('static', filename='ycard_scripts.js') }}"></script>
+    <script >
+        function toggleYellowBoxes(className) {
+            const yellowBoxes = document.querySelectorAll(`.${className} .yellow-box`);
+            let visibleCount = Array.from(yellowBoxes).filter(box => box.style.visibility === 'visible').length;
+
+            if (visibleCount < yellowBoxes.length) {
+                yellowBoxes[visibleCount].style.visibility = 'visible';
+            } else {
+                yellowBoxes.forEach(box => box.style.visibility = 'hidden');
+            }
+        }
+    </script>
 </body>
 </html>

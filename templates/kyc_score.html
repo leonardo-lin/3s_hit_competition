@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>比賽畫面</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='kyc_judo_styles.css') }}">
+    <style>
+        .kyc-label {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: black;
+            font-size: 2em; /* 调整大小 */
+            font-weight: bold; /* 加粗 */
+            background-color: white;
+            padding-left: 26%;
+            letter-spacing: 35px;
+        }
+        
+        .kyc-label span {
+            margin: 0 5px; /* 调整字母之间的间距 */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -30,37 +47,33 @@
                 <div class="player-name">{{ player1 or "選手一" }}</div>
                 <div class="country-code">TPE</div>
                 <div class="medal-area_A">
-                    <div class="medal-box">G</div>
-                    <div class="medal-box">D</div>
-                    <div class="medal-box">T</div>
+                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 0)">G</div>
+                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 1)">D</div>
+                    <div class="medal-box" style="color: red; background-color: #1E90FF;" onclick="changeColorAndIncrementScore(this, 'score-area_B', 2)">T</div>
                 </div>
                 <div class="score-area_A">
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #1E90FF;" onclick="incrementScore(this)">0</div>
                 </div>
-                <div class="yellow-boxes player-a-yellow-boxes">
-                    <div class="yellow-box"></div>
-                </div>
-                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-a-yellow-boxes')">黃牌</button>
             </div>
-            <div class="space"></div>
+            <div class="kyc-label">
+                <span>K</span>
+                <span>Y</span>
+                <span>C</span>
+            </div>
             <div class="players player-b">
                 <div class="country-code">UZB</div>
                 <div class="medal-area_B">
-                    <div class="medal-box">G</div>
-                    <div class="medal-box">D</div>
-                    <div class="medal-box">T</div>
+                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 0)">G</div>
+                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 1)">D</div>
+                    <div class="medal-box" style="color: red; background-color: #32CD32;" onclick="changeColorAndIncrementScore(this, 'score-area_A', 2)">T</div>
                 </div>
                 <div class="score-area_B">
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
-                    <div class="score-box" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
+                    <div class="score-box" style="background-color: #32CD32;" onclick="incrementScore(this)">0</div>
                 </div>
-                <div class="yellow-boxes player-b-yellow-boxes">
-                    <div class="yellow-box"></div>
-                </div>
-                <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes')">黃牌</button>
                 <div class="player-name">{{ player2 or "選手二" }}</div>
             </div>
         </div>
@@ -71,7 +84,79 @@
             </button>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
-    <script src="{{ url_for('static', filename='ycard_scripts.js') }}"></script>
+    <script >
+        let timerInterval;
+        let isTimerRunning = false;
+        let timeRemaining = 240;
+
+        function changeColorAndIncrementScore(element, targetPlayer, scoreBoxIndex) {
+            // 改变颜色
+            element.style.backgroundColor = 'yellow';
+
+            // 增加目标玩家的分数
+            let scoreBoxes = document.querySelectorAll(`.${targetPlayer} .score-box`);
+            let scoreBox = scoreBoxes[scoreBoxIndex];
+            let score = parseInt(scoreBox.innerText);
+            scoreBox.innerText = score + 1;
+        }
+
+        function incrementScore(element) {
+            let score = parseInt(element.innerText);
+            element.innerText = score + 1;
+        }
+
+
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                alert("時間到！");
+            }
+        }
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            document.querySelector('.timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
+        function setTimer(minutes, seconds) {
+            timeRemaining = minutes * 60 + seconds;
+            updateTimerDisplay();
+        }
+
+        function openSettings() {
+            let timeInput = prompt("請輸入倒數時間 (格式: MM:SS)", "5:00");
+            if (timeInput) {
+                let timerParts = timeInput.split(':');
+                let minutes = parseInt(timerParts[0]);
+                let seconds = parseInt(timerParts[1]);
+                if (!isNaN(minutes) && !isNaN(seconds)) {
+                    setTimer(minutes, seconds);
+                } else {
+                    alert("請輸入有效的時間格式");
+                }
+            }
+        }
+
+        document.querySelector('.timer').addEventListener('dblclick', function() {
+            openSettings();
+        });
+
+
+    </script>
 </body>
 </html>
