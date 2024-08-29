@@ -187,6 +187,11 @@ body {
     height: 24px; /* 根据需要调整图片大小 */
     margin-left: 10px;  /* 调整与设置按钮的间距 */
     cursor: pointer;
-    visibility: hidden;
 }
-
+.crown-icon {
+    display: none;
+    width: 40px;  /* 根据需要调整图片大小 */
+    height: 40px; /* 根据需要调整图片大小 */
+    margin-left: 5px;  /* 调整与姓名的间距 */
+    vertical-align: middle; /* 图片与文本垂直对齐 */
+}

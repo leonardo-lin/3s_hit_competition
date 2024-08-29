@@ -21,25 +21,7 @@
         .kyc-label span {
             margin: 0 5px; /* 调整字母之间的间距 */
         }
-        .crown-icon {
-            display: none;
-            width: 40px;  /* 根据需要调整图片大小 */
-            height: 40px; /* 根据需要调整图片大小 */
-            margin-left: 5px;  /* 调整与姓名的间距 */
-            vertical-align: middle; /* 图片与文本垂直对齐 */
-        }
-        .refresh-button {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .refresh-button img {
-            width: 30px;  /* 根据需要调整图片大小 */
-            height: 30px; /* 根据需要调整图片大小 */
-            margin-left: 10px;  /* 调整与设置按钮的间距 */
-            cursor: pointer;
-        }
+        
 
         
     </style>
@@ -100,7 +82,7 @@
                 </div>
                 <div class="player-name">
                     <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
-                    {{ player2 or "選手二" }}
+                    {{ player2_name or "選手二" }}
                 </div>
             </div>
         </div>

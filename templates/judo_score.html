@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>比賽畫面</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='kyc_judo_styles.css') }}">
+    <style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -77,14 +79,21 @@
     <script >
         function toggleYellowBoxes(className) {
             const yellowBoxes = document.querySelectorAll(`.${className} .yellow-box`);
-            let visibleCount = Array.from(yellowBoxes).filter(box => box.style.visibility === 'visible').length;
+            const redBox = document.querySelector(`.${className} .red-box`);
+            let visibleYellowCount = Array.from(yellowBoxes).filter(box => box.style.visibility === 'visible').length;
 
-            if (visibleCount < yellowBoxes.length) {
-                yellowBoxes[visibleCount].style.visibility = 'visible';
+            if (visibleYellowCount < yellowBoxes.length) {
+                yellowBoxes[visibleYellowCount].style.visibility = 'visible';
+            } else if (redBox && redBox.style.visibility !== 'visible') {
+                redBox.style.visibility = 'visible';
             } else {
                 yellowBoxes.forEach(box => box.style.visibility = 'hidden');
+                if (redBox) {
+                    redBox.style.visibility = 'hidden';
+                }
             }
         }
+
     </script>
 </body>
 </html>
