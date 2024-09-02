@@ -81,7 +81,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 28px;
     color: red;
     background-color: transparent;
 }
@@ -108,7 +108,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 28px;
     color: black;
     background-color: transparent;
 }        

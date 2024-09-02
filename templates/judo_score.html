@@ -13,6 +13,7 @@
             display: flex;
             align-items: center;  /* 垂直居中 */
             justify-content: center;  /* 水平居中 */
+            font-size: 30px;
             background-color: transparent;  /* 若不希望有背景色，設為透明 */
             border: none;  /* 移除邊框 */
             cursor: pointer;  /* 讓滑鼠游標變為手型 */
@@ -21,6 +22,15 @@
             position: relative;  /* 使 z-index 生效 */
             z-index: 10; 
             
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
         }
 
     </style>
@@ -49,8 +59,10 @@
         <div class="players-container">
             <div class="players player-a" style="background-color: white;">
                 <div class="takedown-time" id="player1-score" onclick="takedownIncrement('player1-score', document.querySelector('.player-b .score-box'))">0</div>
-                <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
-                <div class="player-name ">{{ player1_name or "選手一" }}</div>
+                <div class="player-name">
+                    <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
+                    {{ player2_name or "選手二" }}
+                </div>
                 <div class="country-code" style="color: black;">{{player1_place or "TPE"}}</div>
                 
                 <div class="score-area_A">
@@ -80,8 +92,10 @@
                 </div>
                 <button class="yellow_toggle-button" onclick="toggleYellowBoxes('player-b-yellow-boxes', document.querySelector('.player-a .score-box'))">黃牌</button>
                 <div class="takedown-time" id="player2-score" onclick="takedownIncrement('player2-score', document.querySelector('.player-a .score-box'))">0</div>
-                <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
-                <div class="player-name">{{ player2_name or "選手二" }}</div>
+                <div class="player-name">
+                    <img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">
+                    {{ player2_name or "選手二" }}
+                </div>
             </div>
         </div>
         <div class="timer-container">
@@ -89,9 +103,10 @@
             <button class="settings-button" onclick="openSettings()" style="background: none; border: none; cursor: pointer;">
                 <img src="https://img.icons8.com/material-outlined/48/ffffff/settings.png" alt="Settings Icon">
             </button>
-            <button class="refresh-button" onclick="refreshPage()" style="background: none; border: none; cursor: pointer;">
+            <button class="refresh-button" onclick="refreshPage()" style="background: none; border: none; cursor: pointer; display: none;">
                 <img src="https://img.icons8.com/material-outlined/48/ffffff/refresh.png" alt="Refresh Icon">
             </button>
+            
         </div>
     </div>
     <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
@@ -124,10 +139,37 @@
         }
 
         function incrementScore(element) {
-            let score = parseInt(element.innerText, 2);  // 将内部文本作为二进制数字解析
-            score += 1;  // 将分数增加1
-            element.innerText = score.toString(2);  // 将分数转换为二进制字符串并更新显示
+            let score = parseInt(element.innerText, 2);  // 將內部文本作為二進制數字解析
+            score += 1;  // 將分數增加1
+            element.innerText = score.toString(2);  // 將分數轉換為二進制字符串並更新顯示
+
+            // 當分數達到 10 或 11 時觸發閃爍效果
+            if (score === 2 || score === 3) {
+                element.classList.add('blink');
+                stopTimerAndHighlight();  // 停止計時器並變紅
+                showCrown(element);
+                showRefreshButton();
+            }
         }
+
+        function showCrown(element) {
+            // 根據點擊的分數盒子，找到相應選手的王冠圖片
+            let playerDiv = element.closest('.players');
+            let crownIcon = playerDiv.querySelector('.crown-icon');
+
+            if (crownIcon) {
+                crownIcon.style.display = 'inline';  // 顯示王冠
+            } else {
+                console.error("Crown icon not found in the player's element.");
+            }
+        }
+
+        function stopTimerAndHighlight() {
+            clearInterval(intervals['timer']);  // 停止計時器
+            // let timerElement = document.querySelector('.timer');
+            document.querySelector('.timer').style.backgroundColor = 'red';
+        }
+
 
 
         function toggleYellowBoxes(className, opponentScoreElement) {
@@ -151,12 +193,18 @@
         }
 
         function showRefreshButton() {
-            document.querySelector('.refresh-button').style.display = 'inline';
+            const refreshButton = document.querySelector('.refresh-button');
+            if (refreshButton) {
+                refreshButton.style.display = 'inline';  // 顯示重新整理按鈕
+            } else {
+                console.error("Refresh button not found in the document.");
+            }
         }
+
         function refreshPage() {
             window.location.reload();
         }
-
+        
     </script>
 </body>
 </html>
