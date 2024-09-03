@@ -97,6 +97,7 @@
         </div>
     </div>
     <script >
+        let lastscore = null;
         let timerInterval;
         let isTimerRunning = false;
         let timeRemaining = 240;
@@ -113,6 +114,11 @@
             let score = parseInt(scoreBox.innerText);
             scoreBox.innerText = score + 1;
 
+            if (targetPlayer === 'score-area_A') {
+                lastscore = 'A';
+            } else {
+                lastscore = 'B';
+            }
             // 记录由 D 或 T 加分
             if (element.innerText === 'D') {
                 if (targetPlayer === 'score-area_A') {
@@ -135,6 +141,10 @@
             let score = parseInt(element.innerText);
             score += 1;
             element.innerText = score;
+            
+
+            let player = element.closest('.players').classList.contains('player-a') ? 'A' : 'B';
+            lastScore = player;
 
             checkForWinner();
         }
@@ -219,11 +229,16 @@
                             showRefreshButton();
                         } else {
                             // 如果所有条件都相同，最后得分者胜
-                            if (timeRemaining % 2 === 0) {
+                            if (lastscore == 'A'){
                                 document.querySelector('.player-a .crown-icon').style.display = 'inline';
-                            } else {
+                            }   else{
                                 document.querySelector('.player-b .crown-icon').style.display = 'inline';
                             }
+                            // if (timeRemaining % 2 === 0) {
+                            //     document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                            // } else {
+                            //     document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                            // }
                             showRefreshButton();
                         }
                     }
