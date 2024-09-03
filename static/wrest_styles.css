@@ -82,3 +82,34 @@ body {
     margin-top: 20px;
     font-size: 1.5em;
 }
+.penalty-table {
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+.penalty-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.penalty-table td {
+    border: 2px solid white;
+    text-align: center;
+    padding: 5px;
+}
+.score-input {
+    width: 100%;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 1.2em;
+    outline: none;
+    cursor: pointer;
+}
+.score-input::-webkit-outer-spin-button,
+.score-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.score-input[type="number"] {
+    -moz-appearance: textfield;
+}

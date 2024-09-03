@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>比賽項目組別</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='wrest_styles.css') }}">
+    <style>
+        .crown-icon {
+            display: none;;
+            width: 25px;  /* 根据需要调整图片大小 */
+            height: 25px; /* 根据需要调整图片大小 */
+            margin-left: 5px;  /* 调整与姓名的间距 */
+            vertical-align: middle; /* 图片与文本垂直对齐 */
+        }
+        .refresh-button {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .refresh-button img {
+            width: 24px;  /* 根据需要调整图片大小 */
+            height: 24px; /* 根据需要调整图片大小 */
+            margin-left: 10px;  /* 调整与设置按钮的间距 */
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -32,16 +53,52 @@
         <div class="scoreboard">
             <div class="team blue">
                 <div class="team-name">{{player1_place or "TPE"}}</div>
-                <div class="team-member">{{ player1_name or "選手一" }}</div>
-                <div class="score" onclick="incrementScore(this)">0</div>
+                <div class="team-member"><img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">{{ player1_name or "選手一" }}</div>
+                
+                <!-- 新增的表格 -->
+                <div class="penalty-table">
+                    <table>
+                        <tr>
+                            <td onclick="incrementCorrespondingCell(0, this, 'blue')">1分</td>
+                            <td onclick="incrementCorrespondingCell(1, this, 'blue')">3分</td>
+                            <td onclick="incrementCorrespondingCell(2, this, 'blue')">警告</td>
+                        </tr>
+                        <tr>
+                            <td><input type="number" value="0" min="0" class="score-input" id="blue-score1" onchange="manualScoreUpdate('blue')"></td>
+                            <td><input type="number" value="0" min="0" class="score-input" id="blue-score2" onchange="manualScoreUpdate('blue')"></td>
+                            <td><input type="number" value="0" min="0" class="score-input" id="blue-score3" onchange="manualScoreUpdate('red')"></td>
+                        </tr>
+                    </table>
+                </div>
+            
+                <div class="score" id="blue-total-score">0</div>
                 <div class="leader" onclick="toggleLeader(this)"></div>
             </div>
+            
             <div class="team red">
                 <div class="team-name">{{player2_place or "UZB"}}</div>
-                <div class="team-member">{{ player2_name or "選手二" }}</div>
-                <div class="score" onclick="incrementScore(this)">0</div>
+                <div class="team-member"><img src="{{ url_for('static', filename='crown.png') }}" alt="Crown" class="crown-icon">{{ player2_name or "選手二" }}</div>
+                
+                <!-- 新增的表格 -->
+                <div class="penalty-table">
+                    <table>
+                        <tr>
+                            <td onclick="incrementCorrespondingCell(0, this, 'red')">1分</td>
+                            <td onclick="incrementCorrespondingCell(1, this, 'red')">3分</td>
+                            <td onclick="incrementCorrespondingCell(2, this, 'red')">警告</td>
+                        </tr>
+                        <tr>
+                            <td><input type="number" value="0" min="0" class="score-input" id="red-score1" onchange="manualScoreUpdate('red')"></td>
+                            <td><input type="number" value="0" min="0" class="score-input" id="red-score2" onchange="manualScoreUpdate('red')"></td>
+                            <td><input type="number" value="0" min="0" class="score-input" id="red-score3" onchange="manualScoreUpdate('blue')"></td>
+                        </tr>
+                    </table>
+                </div>
+            
+                <div class="score" id="red-total-score">0</div>
                 <div class="leader" onclick="toggleLeader(this)"></div>
             </div>
+            
         </div>
 
         <div class="timer-container">
@@ -49,10 +106,222 @@
             <button class="settings-button" onclick="openSettings()" style="background: none; border: none; cursor: pointer;">
                 <img src="https://img.icons8.com/material-outlined/48/ffffff/settings.png" alt="Settings Icon">
             </button>
+            <button class="refresh-button" onclick="refreshPage()" style="background: none; border: none; cursor: pointer;">
+                <img src="https://img.icons8.com/material-outlined/48/ffffff/refresh.png" alt="Refresh Icon">
+            </button>
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='base_scripts.js') }}"></script>
-    <script src="{{ url_for('static', filename='leader_scripts.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='base_scripts.js') }}"></script> -->
+    <script >
+        function updateTotalScore(teamColor, score1Id, score2Id, opponentScore3Id) {
+            let score1Value = parseInt(document.getElementById(score1Id).value);
+            let score2Value = parseInt(document.getElementById(score2Id).value);
+            let opponentScore3Value = parseInt(document.getElementById(opponentScore3Id).value);
+
+            let totalScore = score1Value * 1 + score2Value * 3 + opponentScore3Value * 1;
+            document.getElementById(teamColor + '-total-score').innerText = totalScore;
+        }
+
+        function manualScoreUpdate(teamColor) {
+            let score1Id = teamColor + '-score1';
+            let score2Id = teamColor + '-score2';
+            let score3Id = teamColor + '-score3';
+            let opponentTeamColor = (teamColor === 'blue' ? 'red' : 'blue');
+            let opponentScore3Id = opponentTeamColor + '-score3';
+
+            // 更新雙方的總分
+            updateTotalScore(teamColor, score1Id, score2Id, opponentScore3Id);
+            updateTotalScore(opponentTeamColor, opponentTeamColor + '-score1', opponentTeamColor + '-score2', score3Id);
+
+            // 檢查分數差
+            checkScoreDifferenceAndStopTimer();
+        }
+
+        function stopTimerAndHighlight() {
+            clearInterval(timerInterval);  // 停止计时器
+            isTimerRunning = false;
+            document.querySelector('.timer').style.backgroundColor = 'red';  // 设置计时器背景为红色
+            showRefreshButton();
+            determineWinner(); // 计时器到0时确定胜利者
+        }
+
+        function determineWinner() {
+            let blueScore = parseInt(document.getElementById('blue-total-score').innerText);
+            let redScore = parseInt(document.getElementById('red-total-score').innerText);
+            
+            let blueScore1 = parseInt(document.getElementById('blue-score1').value);
+            let blueScore2 = parseInt(document.getElementById('blue-score2').value);
+            let blueScore3 = parseInt(document.getElementById('blue-score3').value);
+
+            let redScore1 = parseInt(document.getElementById('red-score1').value);
+            let redScore2 = parseInt(document.getElementById('red-score2').value);
+            let redScore3 = parseInt(document.getElementById('red-score3').value);
+
+            // 初始化赢家为null
+            let winner = null;
+
+            if (blueScore > redScore) {
+                winner = 'blue';
+            } else if (redScore > blueScore) {
+                winner = 'red';
+            } else {
+                // 如果总分相同，比较警告数
+                if (blueScore3 < redScore3) {
+                    winner = 'blue';
+                } else if (redScore3 < blueScore3) {
+                    winner = 'red';
+                } else {
+                    // 如果警告数相同，比较3分数
+                    if (blueScore2 > redScore2) {
+                        winner = 'blue';
+                    } else if (redScore2 > blueScore2) {
+                        winner = 'red';
+                    } else {
+                        // 如果3分数相同，比较1分数
+                        if (blueScore1 > redScore1) {
+                            winner = 'blue';
+                        } else if (redScore1 > blueScore1) {
+                            winner = 'red';
+                        } else {
+                            // 如果所有分数都相同，最后得分者获胜
+                            let lastScored = getLastScoredTeam();
+                            winner = lastScored;
+                        }
+                    }
+                }
+            }
+
+            // 显示胜利者的皇冠
+            if (winner) {
+                document.querySelector(`.${winner} .crown-icon`).style.display = 'inline';
+            }
+        }
+
+        function getLastScoredTeam() {
+            // 假设 lastScoredTeam 是记录最后得分者的变量
+            // 你需要在每次更新分数时跟踪这个变量
+            return lastScoredTeam; // 'blue' 或 'red'
+        }
+
+        let lastScoredTeam = null;
+
+        function incrementCorrespondingCell(index, element, teamColor) {
+            let score1Id = teamColor + '-score1';
+            let score2Id = teamColor + '-score2';
+            let score3Id = teamColor + '-score3';
+            let opponentTeamColor = (teamColor === 'blue' ? 'red' : 'blue');
+            let opponentScore3Id = opponentTeamColor + '-score3';
+
+            let scoreInputId = teamColor + '-score' + (index + 1);
+            let scoreInputElement = document.getElementById(scoreInputId);
+            let currentValue = parseInt(scoreInputElement.value);
+            scoreInputElement.value = currentValue + 1;
+
+            // 记录最后得分者
+            if (index != 2){
+                lastScoredTeam = teamColor
+            }
+            // 更新双方的总分
+            updateTotalScore(teamColor, score1Id, score2Id, opponentScore3Id);
+            updateTotalScore(opponentTeamColor, opponentTeamColor + '-score1', opponentTeamColor + '-score2', score3Id);
+
+            // 检查分数差
+            checkScoreDifferenceAndStopTimer();
+        }
+
+        // 其他函数保持不变
+
+        function checkScoreDifferenceAndStopTimer() {
+            let blueScore = parseInt(document.getElementById('blue-total-score').innerText);
+            let redScore = parseInt(document.getElementById('red-total-score').innerText);
+
+            if (Math.abs(blueScore - redScore) >= 8) {
+                stopTimerAndHighlight();
+            }
+        }
+
+        function toggleLeader(element) {
+            if (element.innerText === "") {
+                element.innerText = "領先方";
+                element.style.backgroundColor = "yellow";
+                element.style.color = "black";
+            } else {
+                element.innerText = "";
+                element.style.backgroundColor = "";
+                element.style.color = "black";
+            }
+        }
+        let timerInterval;
+        let isTimerRunning = false;
+        let timeRemaining = 240;
+
+        function incrementScore(element) {
+            let score = parseInt(element.innerText);
+            element.innerText = score + 1;
+        }
+
+
+
+        function updateTimer() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                stopTimerAndHighlight();
+            }
+        }
+        
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+            document.querySelector('.timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+            } else {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
+        function setTimer(minutes, seconds) {
+            timeRemaining = minutes * 60 + seconds;
+            updateTimerDisplay();
+        }
+
+        function openSettings() {
+            let timeInput = prompt("請輸入倒數時間 (格式: MM:SS)", "5:00");
+            if (timeInput) {
+                let timerParts = timeInput.split(':');
+                let minutes = parseInt(timerParts[0]);
+                let seconds = parseInt(timerParts[1]);
+                if (!isNaN(minutes) && !isNaN(seconds)) {
+                    setTimer(minutes, seconds);
+                } else {
+                    alert("請輸入有效的時間格式");
+                }
+            }
+        }
+
+        document.querySelector('.timer').addEventListener('dblclick', function() {
+            openSettings();
+        });
+
+        function showRefreshButton() {
+            document.querySelector('.refresh-button').style.display = 'inline';
+        }
+        function refreshPage() {
+            window.location.reload();
+        }
+
+
+
+    </script>
 </body>
 </html>

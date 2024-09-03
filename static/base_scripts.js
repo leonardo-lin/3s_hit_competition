@@ -16,9 +16,15 @@ function updateTimer() {
     } else {
         clearInterval(timerInterval);
         isTimerRunning = false;
-        alert("時間到！");
+        stopTimerAndHighlight();
     }
 }
+function stopTimerAndHighlight() {
+    clearInterval(timerInterval);  // 停止计时器
+    // isTimerRunning = false;
+    document.querySelector('.timer').style.backgroundColor = 'red';  // 设置计时器背景为红色
+}
+
 
 function updateTimerDisplay() {
     let minutes = Math.floor(timeRemaining / 60);
