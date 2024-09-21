@@ -1,12 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 import os
 
 app = Flask(__name__)
 
 
-@app.route('/')
+
+
+app.secret_key = 'GENSHINSTARDO'  # 設置一個密鑰來保護session
+
+# 預設密碼（你可以修改）
+PASSWORD = 'fachen369198*'
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # 驗證密碼
+        if request.form['password'] == PASSWORD:
+            session['authenticated'] = True
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', error="密碼錯誤，請重試。")
+    return render_template('login.html')
+
+@app.route('/home')
 def home():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
     return render_template('home.html')
 
 # 設定檔案上傳的目錄

@@ -25,6 +25,7 @@
         .table th, .table td {
             border: 1px solid #ddd;
             padding: 8px;
+            text-align: center; /* 將文字置中 */
         }
         .table th {
             background-color: #e0e0e0;
@@ -35,11 +36,11 @@
         .table tbody tr:nth-child(-n+4) {
             background-color: #ffe5b4; /* 淺橘色 */
         }
-        /* Custom column colors */
-        .table td:nth-of-type(3) {
+        /* Custom column colors for the first 4 rows */
+        .table tbody tr:nth-child(-n+4) td:nth-of-type(3) {
             background-color: #add8e6; /* Light blue for 3rd column */
         }
-        .table td:nth-of-type(4) {
+        .table tbody tr:nth-child(-n+4) td:nth-of-type(4) {
             background-color: #ffcccb; /* Red for 4th column */
         }
     </style>
@@ -56,4 +57,3 @@
     </div>
 </body>
 </html>
-
