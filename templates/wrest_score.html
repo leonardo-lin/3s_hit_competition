@@ -195,7 +195,12 @@
 
             // 显示胜利者的皇冠
             if (winner) {
-                document.querySelector(`.${winner} .crown-icon`).style.display = 'inline';
+                let confirmation = confirm("是否顯示王冠？");
+                    if (confirmation) {
+                        document.querySelector(`.${winner} .crown-icon`).style.display = 'inline';
+                    } else {
+                        pass;
+                    }
             }
         }
 

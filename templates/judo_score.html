@@ -183,8 +183,9 @@
             if (score === 2 || score === 3) {
                 element.classList.add('blink');
                 stopTimerAndHighlight();  // 停止計時器並變紅
-                showCrown(element);
+                
                 showRefreshButton();
+                showCrown(element);
             }
         }
 
@@ -226,13 +227,15 @@
             let player2Score = parseInt(document.querySelector('.player-b .score-box').innerText, 2);
 
             if (player1Score > player2Score) {
+                
+                stopTimerAndHighlight();
+                showRefreshButton();
                 showCrown(document.querySelector('.player-a .score-box'));
-                stopTimerAndHighlight();
-                showRefreshButton();
             } else if (player2Score > player1Score) {
-                showCrown(document.querySelector('.player-b .score-box'));
+                
                 stopTimerAndHighlight();
                 showRefreshButton();
+                showCrown(document.querySelector('.player-b .score-box'));
             } else {
                 // 分數相同，重新開始正向計時
                 startPositiveTimer();
@@ -282,11 +285,25 @@
             let crownIcon = playerDiv.querySelector('.crown-icon');
 
             if (crownIcon) {
-                crownIcon.style.display = 'inline';  // 顯示王冠
+                // crownIcon.style.display = 'inline';  // 顯示王冠
+
+                // 延遲 500 毫秒後才觸發 confirm 彈窗
+                setTimeout(function() {
+                    let confirmation = confirm("是否顯示王冠？");
+                    if (confirmation) {
+                        crownIcon.style.display = 'inline';
+                        // 如果用戶選擇 "確定"，可以進行更多操作，例如增加一個提示或執行某些動作
+                        console.log("顯示王冠");
+                    } else {
+                        // 如果用戶選擇 "取消"，可以進行其他操作
+                        console.log("取消顯示王冠");
+                    }
+                }, 500);  // 500 毫秒的延遲
             } else {
                 console.error("Crown icon not found in the player's element.");
             }
         }
+
 
         function showRefreshButton() {
             const refreshButton = document.querySelector('.refresh-button');

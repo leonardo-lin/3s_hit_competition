@@ -150,6 +150,7 @@
             checkForWinner();
         }
 
+        
         function checkForWinner() {
             let playerAScore1 = parseInt(document.querySelector('.score-area_A .score-box:nth-child(1)').innerText);
             let playerAScore2 = parseInt(document.querySelector('.score-area_A .score-box:nth-child(2)').innerText);
@@ -158,13 +159,15 @@
             let playerBScore2 = parseInt(document.querySelector('.score-area_B .score-box:nth-child(2)').innerText);
 
             if (playerAScore1 === 1 || playerAScore2 === 2) {
-                document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                // document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                showCrownForPlayer('A');
                 showRefreshButton();
                 stopTimerAndHighlight();
             }
 
             if (playerBScore1 === 1 || playerBScore2 === 2) {
-                document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                // document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                showCrownForPlayer('B');
                 showRefreshButton();
                 stopTimerAndHighlight();
             }
@@ -178,6 +181,21 @@
 
         // 现有的计时器相关代码保持不变
 
+        function showCrownForPlayer(player) {
+            setTimeout(function() {
+                let confirmation = confirm("是否顯示王冠？");
+                if (confirmation) {
+                    if (player === 'A') {
+                        document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                    } else if (player === 'B') {
+                        document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                    }
+                } else {
+                    pass;
+                }
+            }, 500);
+            
+        }
 
 
 
@@ -201,46 +219,43 @@
 
             // 判定 score box 2 的得分
             if (playerAScore2 > playerBScore2) {
-                document.querySelector('.player-a .crown-icon').style.display = 'inline';
                 showRefreshButton();
+                showCrownForPlayer('A');
+                
             } else if (playerBScore2 > playerAScore2) {
-                document.querySelector('.player-b .crown-icon').style.display = 'inline';
                 showRefreshButton();
+                showCrownForPlayer('B');
             } else { // 若 score box 2 得分相同
                 if (playerAScore.D > playerBScore.D) {
-                    document.querySelector('.player-a .crown-icon').style.display = 'inline';
                     showRefreshButton();
+                    showCrownForPlayer('A');
                 } else if (playerBScore.D > playerAScore.D) {                
-                    document.querySelector('.player-b .crown-icon').style.display = 'inline';
                     showRefreshButton();
+                    showCrownForPlayer('B');
                 } else {
                     // 判定 score box 3 的得分
                     if (playerAScore3 > playerBScore3) {
-                        document.querySelector('.player-a .crown-icon').style.display = 'inline';
                         showRefreshButton();
+                        showCrownForPlayer('A');
                     } else if (playerBScore3 > playerAScore3) {
-                        document.querySelector('.player-b .crown-icon').style.display = 'inline';
                         showRefreshButton();
+                        showCrownForPlayer('B');
                     } else { // 若 score box 3 得分相同
                         if (playerAScore.T > playerBScore.T) {
-                            document.querySelector('.player-a .crown-icon').style.display = 'inline';
                             showRefreshButton();
+                            showCrownForPlayer('A');
                         } else if (playerBScore.T > playerAScore.T) {
-                            document.querySelector('.player-b .crown-icon').style.display = 'inline';
                             showRefreshButton();
+                            showCrownForPlayer('B');
                         } else {
+                            
+                            showRefreshButton();
                             // 如果所有条件都相同，最后得分者胜
                             if (lastscore == 'A'){
-                                document.querySelector('.player-a .crown-icon').style.display = 'inline';
+                                showCrownForPlayer('A');
                             }   else{
-                                document.querySelector('.player-b .crown-icon').style.display = 'inline';
+                                showCrownForPlayer('B');
                             }
-                            // if (timeRemaining % 2 === 0) {
-                            //     document.querySelector('.player-a .crown-icon').style.display = 'inline';
-                            // } else {
-                            //     document.querySelector('.player-b .crown-icon').style.display = 'inline';
-                            // }
-                            showRefreshButton();
                         }
                     }
                 }
