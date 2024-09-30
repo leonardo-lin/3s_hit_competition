@@ -1,8 +1,4 @@
-import pandas as pd
+from app import app  # 從 app.py 導入 app
 
-# 讀取Excel文件
-file_path = 'competitions/甲場地表.xlsx'  # 將此路徑替換為實際文件路徑
-df = pd.read_excel(file_path)
-
-# 顯示表格內容
-print(df)
+if __name__ == '__main__':
+    app.run(debug=True)  # 使用新的端口啟動應用程式
