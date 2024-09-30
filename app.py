@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import pandas as pd
 import os
 
@@ -43,6 +43,8 @@ def get_xlsx_files():
 # 第 1 個網頁：上傳 .xlsx 檔案
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
     if request.method == 'POST':
         if 'file' in request.files:
             file = request.files['file']
@@ -58,10 +60,11 @@ def upload():
     return render_template('upload.html')
 
 
-# 第 2 個網頁：編輯 .xlsx 檔案
 @app.route('/edit', methods=['GET', 'POST'])
 def edit():
-    files = get_xlsx_files()
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    files = get_xlsx_files()  # 取得 .xlsx 檔案清單
     
     if request.method == 'POST':
         selected_file = request.form.get('file_select')
@@ -70,10 +73,32 @@ def edit():
     
     return render_template('edit.html', files=files)
 
+@app.route('/delete_all_files', methods=['POST'])
+def delete_all_files():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+    try:
+        # 遍歷並刪除 UPLOAD_FOLDER 資料夾下的所有 .xlsx 檔案
+        for filename in os.listdir(UPLOAD_FOLDER):
+            if filename.endswith('.xlsx'):
+                os.remove(os.path.join(UPLOAD_FOLDER, filename))
+        
+        flash('All .xlsx files have been successfully deleted.', 'success')
+    except Exception as e:
+        flash(f'Error occurred while deleting files: {e}', 'danger')
+    
+    return redirect(url_for('edit'))
+
+def get_xlsx_files():
+    # 獲取所有 .xlsx 檔案的清單
+    return [f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.xlsx')]
+
 
 # 第 2.1 個網頁：編輯特定 .xlsx 檔案
 @app.route('/edit_file/<filename>', methods=['GET', 'POST'])
 def edit_file(filename):
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
     filename_with_ext = filename if filename.endswith('.xlsx') else filename + '.xlsx'
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename_with_ext)
     if not os.path.exists(filepath):
@@ -136,6 +161,8 @@ def edit_file(filename):
 # 第 3 個網頁：顯示所有.xlsx檔案表格
 @app.route('/display')
 def overview():
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
     folder_path = UPLOAD_FOLDER
     tables = []
 
@@ -276,3 +303,4 @@ def jload_data():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
+    # app.run(debug=True)

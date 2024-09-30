@@ -17,6 +17,14 @@
       <input type="submit" value="Edit">
     </form>
     <br>
+    
+    <!-- Upload a new file link -->
     <a href="{{ url_for('upload') }}">Upload a new file</a>
+    <br><br>
+
+    <!-- Delete all files form -->
+    <form method="POST" action="{{ url_for('delete_all_files') }}" onsubmit="return confirm('Are you sure you want to delete all .xlsx files? This action cannot be undone!');">
+      <input type="submit" value="Delete All Files" style="background-color: red; color: white;">
+    </form>
   </body>
 </html>
